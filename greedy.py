@@ -1,6 +1,11 @@
 import heapq
-from graph import graph
-from heuristic import heuristic
+
+try:
+    from app.graph import graph
+    from app.heuristic import heuristic
+except (ModuleNotFoundError, ImportError):
+    from graph import graph
+    from heuristic import heuristic
 
 def greedy(start, goal):
     priority_queue = []
