@@ -1,5 +1,9 @@
 import heapq
-from graph import graph
+
+try:
+    from app.graph import graph
+except (ModuleNotFoundError, ImportError):
+    from graph import graph
 
 def ucs(start, goal):
     priority_queue = []
