@@ -1,5 +1,9 @@
 from collections import deque
-from graph import graph
+
+try:
+    from app.graph import graph
+except (ModuleNotFoundError, ImportError):
+    from graph import graph
 
 def bfs(start, goal):
     queue = deque()
