@@ -1,37 +1,46 @@
-# Route Planner AI (Ethiopia)
+# Route Planner AI
 
-This project demonstrates four search algorithms on a city graph:
+Route Planner AI is an educational project that compares classic graph search algorithms on an Ethiopian city map.
 
-- BFS (Breadth-First Search)
-- UCS (Uniform Cost Search)
-- Greedy Best-First Search
-- A* Search
+It includes:
 
-The current graph is designed so each algorithm can behave differently for the route:
+- A Python backend with BFS, UCS, Greedy Best-First, and A* implementations
+- A FastAPI API to query graph data and computed paths
+- A Next.js frontend to visualize cities, roads, and selected routes
 
-- Start: Debre Birhan
-- Goal: Bahir Dar
+## Algorithms Included
+
+- BFS (Breadth-First Search): minimizes hops (number of edges)
+- UCS (Uniform Cost Search): minimizes total path cost
+- Greedy Best-First Search: chooses based on heuristic only
+- A* Search: combines path cost + heuristic for optimal informed search
 
 ## Project Structure
 
-- frontend/
-- backend/
-	- api/main.py
-	- app/graph.py
-	- app/heuristic.py
-	- app/bfs.py
-	- app/ucs.py
-	- app/greedy.py
-	- app/astar.py
+```text
+route-planner-ai/
+	backend/
+		api/main.py          # FastAPI entrypoint
+		app/                 # search algorithms, graph, heuristics
+		requirements.txt
+	frontend/
+		app/                 # Next.js app router pages
+		components/          # React components (graph visualizer)
+		lib/                 # API client, types, mock data
+	*.py                   # optional standalone algorithm scripts
+```
 
 ## Prerequisites
 
-- Python 3.10+ (recommended: use the workspace virtual environment)
-- Windows PowerShell or Git Bash terminal
+- Python 3.10+
+- Node.js 18+
+- npm
 
-## Setup
+## Quick Start
 
-Run these commands from the project root (route-planner-ai):
+From the `route-planner-ai` folder, run backend and frontend in separate terminals.
+
+### 1) Start Backend (FastAPI)
 
 ```bash
 cd backend
@@ -48,161 +57,20 @@ Activate virtual environment:
 source .venv/Scripts/activate
 ```
 
-Install dependencies:
+Install dependencies and run server:
 
 ```bash
-pip install -r requirements.txt
-```
-
-## Run Each Algorithm Separately
-
-Move to the app folder first:
-
-```bash
-cd backend/app
-```
-
-### 1) BFS
-
-```bash
-python bfs.py
-```
-
-Expected output style:
-
-```text
-Path found: ['Debre Birhan', 'Addis Ababa', 'Debre Markos', 'Bahir Dar']
-```
-
-Notes:
-
-- BFS minimizes number of steps (edges), not total distance.
-
-### 2) UCS
-
-```bash
-python ucs.py
-```
-
-Expected output style:
-
-```text
-Path found: [...]
-Total cost: ... km
-```
-
-Notes:
-
-- UCS minimizes total travel distance.
-
-### 3) Greedy
-
-```bash
-python greedy.py
-```
-
-Expected output style:
-
-```text
-Path found: [...]
-```
-
-Notes:
-
-- Greedy chooses the next city with the lowest heuristic value.
-- It can be fast but may return a non-optimal route.
-
-### 4) A*
-
-```bash
-python astar.py
-```
-
-Expected output style:
-
-```text
-Path found: [...]
-Total cost: ... km
-```
-
-Notes:
-
-- A* uses both actual cost (g) and heuristic estimate (h).
-- In this graph, A* should find an optimal-cost route.
-
-## Run All Algorithms in One Command
-
-The file backend/app/graph.py contains a test section that runs BFS, UCS, Greedy, and A* together.
-
-From backend/app:
-
-```bash
-python graph.py
-```
-
-You should see all four paths and their costs printed (where applicable).
-
-## Why Results Differ
-
-- BFS: shortest number of hops.
-- UCS: lowest sum of distances.
-- Greedy: follows heuristic only, can be misled.
-- A*: balances cost-so-far plus heuristic.
-
-This is intentional and useful for understanding algorithm behavior.
-
-## Troubleshooting
-
-If python is not recognized, use full interpreter path from your virtual environment, for example:
-
-```bash
-"s:/Learn/Thrid Year Second Semister/Thrid Year Second Semister/AI/project/Search/.venv/Scripts/python.exe" bfs.py
-```
-
-If you get ModuleNotFoundError:
-
-- Ensure you are inside backend/app when running bfs.py, ucs.py, greedy.py, astar.py, or graph.py.
-- Ensure graph.py and heuristic.py are in the same folder.
-
-If outputs do not match expected behavior:
-
-- Confirm you are using the updated files:
-	- backend/app/graph.py
-	- backend/app/heuristic.py
-
-## Backend API (for Frontend Integration)
-
-The frontend calls these endpoints:
-
-- GET /graph
-- GET /path?algorithm=UCS&start=Debre Birhan&goal=Bahir Dar
-
-### Start FastAPI server
-
-From project root:
-
-```bash
-cd backend
 pip install -r requirements.txt
 uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-API docs will be available at:
+Backend endpoints:
 
-- http://127.0.0.1:8000/docs
+- API docs: http://127.0.0.1:8000/docs
+- Graph: `GET /graph`
+- Path: `GET /path?algorithm=UCS&start=Debre%20Birhan&goal=Bahir%20Dar`
 
-## Frontend (Next.js + Tailwind + React Flow)
-
-The frontend source is in frontend/ and includes:
-
-- app/page.tsx
-- components/GraphVisualizer.tsx
-- lib/api.ts
-- lib/mockData.ts
-
-### Install and run frontend
-
-From project root:
+### 2) Start Frontend (Next.js)
 
 ```bash
 cd frontend
@@ -210,35 +78,94 @@ npm install
 npm run dev
 ```
 
-Open:
+Open: http://localhost:3000
 
-- http://localhost:3000
+## API Reference
 
-### Frontend Features
+### GET `/graph`
 
-- City graph visualization (nodes and edges)
-- Start/goal highlighted and animated
-- Algorithm dropdown (BFS, UCS, GREEDY, ASTAR)
-- Compute Path button
-- Reset button
-- Highlighted path with animated traversal on selected route
-- Edge distance labels and node tooltips
-- Responsive layout
+Returns full graph adjacency data.
 
-### Backend URL Configuration (optional)
+Example response:
 
-By default, frontend calls:
+```json
+{
+	"graph": {
+		"Addis Ababa": {
+			"Debre Birhan": 130
+		}
+	}
+}
+```
 
-- http://127.0.0.1:8000
+### GET `/path`
 
-To change API base URL, create frontend/.env.local:
+Query parameters:
+
+- `algorithm`: `BFS`, `UCS`, `GREEDY`, `ASTAR` (also accepts `A*` and `A_STAR`)
+- `start`: start city
+- `goal`: goal city
+
+Example:
+
+```text
+/path?algorithm=ASTAR&start=Debre%20Birhan&goal=Bahir%20Dar
+```
+
+Success response shape:
+
+```json
+{
+	"algorithm": "ASTAR",
+	"start": "Debre Birhan",
+	"goal": "Bahir Dar",
+	"path": ["Debre Birhan", "Addis Ababa", "Debre Markos", "Bahir Dar"],
+	"cost": 0
+}
+```
+
+Error cases:
+
+- `400` unknown city or unsupported algorithm
+- `404` no path found
+
+## Running Algorithms Directly (Python)
+
+If you want to test algorithms without API/frontend:
 
 ```bash
+cd backend/app
+python bfs.py
+python ucs.py
+python greedy.py
+python astar.py
+```
+
+To run combined checks (if present in script main block):
+
+```bash
+python graph.py
+```
+
+## Frontend Notes
+
+- Frontend calls `http://127.0.0.1:8000` by default
+- If backend is unavailable, frontend falls back to mock data
+
+To override backend URL, create `frontend/.env.local`:
+
+```env
 NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000
 ```
 
-### Mock Data Fallback
+## Troubleshooting
 
-If backend is not running, frontend automatically uses mock graph and route data from:
+- Python not found: activate the virtual environment and retry
+- `ModuleNotFoundError`: run algorithm files from `backend/app`
+- CORS/API issues: ensure backend is running on `127.0.0.1:8000`
+- Frontend path not updating: verify query params `algorithm`, `start`, `goal`
 
-- frontend/lib/mockData.ts
+## Tech Stack
+
+- Backend: FastAPI, Python
+- Frontend: Next.js 14, React 18, TypeScript, Tailwind CSS, React Flow (`@xyflow/react`)
